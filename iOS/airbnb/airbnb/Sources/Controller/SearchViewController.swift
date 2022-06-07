@@ -1,83 +1,127 @@
 //
 //  SearchViewController.swift
-//  airbnb
+//  
 //
-//  Created by Jihee hwang on 2022/05/25.
+//  Created by Jihee hwang on 2022/05/30.
 //
 
 import UIKit
 import SnapKit
+import MapKit
 
 final class SearchViewController: UIViewController {
 
-    private let dataSource = SearchCollectionViewDataSource()
-    private let searchBarDelegate = SearchBarDelegate()
+    private let tableView = UITableView(frame: .zero, style: .plain)
+    private var searchCompleter = MKLocalSearchCompleter() // 자동완성 도와주는 객체
+    private var dataSource = SearchTableViewDataSource()
     
+    private lazy var rightButton = UIBarButtonItem(title: "지우기", style: .plain, target: self, action: #selector(didTabRemoveButton))
+
     private let navigationBarUnderLineView: UIView = {
         let view = UIView()
-        view.backgroundColor = .grey4
+        view.backgroundColor = .line
         return view
     }()
-
-    private let searchController: UISearchController = {
-        let searchController = UISearchController(searchResultsController: SearchTableViewController())
-        searchController.searchBar.placeholder = Title.searchBarPlaceholder
-        searchController.obscuresBackgroundDuringPresentation = true
-        return searchController
-    }()
-
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = Logo.logoImage
-        let newSize = CGRect(x: 0, y: 0, width: 90, height: 28)
-        UIGraphicsBeginImageContext(CGSize(width: 90, height: 28))
-        imageView.image?.draw(in: newSize)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()?.withRenderingMode(.alwaysOriginal)
-        UIGraphicsEndImageContext()
-        imageView.image = newImage
-        return imageView
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 21, weight: .bold)
+        label.text = Title.searchBarTableViewTitle
+        return label
     }()
     
-    private let collectionView: UICollectionView = {
-        let layout = Layout.createLayout()
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        return collectionView
+    private let searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchBar.placeholder = Title.searchBarPlaceholder
+        return searchController
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        setCollectionView()
         layout()
     }
     
     private func configureView() {
+        title = "숙소 찾기"
         view.backgroundColor = .white
-        navigationItem.searchController = searchController
-        navigationItem.titleView = logoImageView
-
-        searchController.searchBar.delegate = searchBarDelegate
-    }
-    
-    private func setCollectionView() {
-        collectionView.dataSource = dataSource
         
-        collectionView.register(HeroImageCell.self, forCellWithReuseIdentifier: HeroImageCell.identifier)
-        collectionView.register(RecommendedTravelDestinationCell.self, forCellWithReuseIdentifier: RecommendedTravelDestinationCell.identifier)
-        collectionView.register(CollectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionHeaderView.identifier)
+        navigationItem.rightBarButtonItem = rightButton
+        navigationItem.searchController = searchController
+        navigationItem.searchController?.searchBar.becomeFirstResponder() // First Responder 로 지정
+        
+        rightButton.tintColor = .gray3
+        
+        searchController.searchBar.delegate = self
+        searchController.hidesNavigationBarDuringPresentation = false // 네비게이션 타이틀 유지
+        searchController.automaticallyShowsCancelButton = false
+        // cancle 버튼 삭제
+        
+        tableView.register(CityViewCell.self, forCellReuseIdentifier: CityViewCell.identifier)
+        tableView.register(LocationTableViewCell.self, forCellReuseIdentifier: LocationTableViewCell.identifier)
+        tableView.dataSource = dataSource
+        
+        searchCompleter.delegate = self
     }
     
     private func layout() {
         view.addSubview(navigationBarUnderLineView)
-        view.addSubview(collectionView)
-
+        view.addSubview(titleLabel)
+        view.addSubview(tableView)
+        
         navigationBarUnderLineView.snp.makeConstraints {
             $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(1)
         }
+        
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(32)
+            $0.leading.equalTo(16)
+        }
+        
+        tableView.snp.makeConstraints {
+            $0.top.equalTo(titleLabel).offset(40)
+            $0.bottom.leading.trailing.equalToSuperview()
+        }
+    }
+}
 
-        collectionView.snp.makeConstraints {
-            $0.edges.equalTo(view.safeAreaLayoutGuide)
+// MARK: - extension
+
+extension SearchViewController {
+    @objc func didTabRemoveButton(_ sender: Any) {
+        searchController.searchBar.text = ""
+        dataSource.didStartSearch(isSearching: false)
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            dataSource.didStartSearch(isSearching: false)
+            
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        } else {
+            dataSource.didStartSearch(isSearching: true)
+            searchCompleter.queryFragment = searchText
+        }
+    }
+}
+
+extension SearchViewController: MKLocalSearchCompleterDelegate {
+    // 자동완성 시 결과를 받는 함수
+    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+        let result = completer.results
+        dataSource.didGetTheResults(result: result)
+        
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
         }
     }
 }

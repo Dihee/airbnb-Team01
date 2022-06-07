@@ -40,7 +40,7 @@ final class HeroImageCell: UICollectionViewCell {
         label.text = "여행 아이디어 얻기"
         label.textColor = .white
         label.textAlignment = .center
-        label.backgroundColor = .grey1
+        label.backgroundColor = .gray1
         label.clipsToBounds = true
         label.layer.cornerRadius = 12
         return label

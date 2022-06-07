@@ -1,5 +1,5 @@
 //
-//  BannerViewCell.swift
+//  RecommendedTravelDestinationCell.swift
 //  airbnb
 //
 //  Created by Jihee hwang on 2022/05/27.
@@ -24,7 +24,7 @@ final class RecommendedTravelDestinationCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
-        imageView.backgroundColor = .grey5
+        imageView.backgroundColor = .gray5
         imageView.image = Image.placeImage // 임시 이미지
         return imageView
     }()

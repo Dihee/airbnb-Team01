@@ -1,5 +1,5 @@
 //
-//  SearchCollectionViewDataSource.swift
+//  HomeCollectionViewDataSource.swift
 //  airbnb
 //
 //  Created by Jihee hwang on 2022/06/02.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SearchCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+final class HomeCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int { 2 }
     

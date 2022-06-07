@@ -1,18 +1,17 @@
 //
-//  TabBarViewController.swift
+//  TabBarController.swift
 //  airbnb
 //
 //  Created by Jihee hwang on 2022/05/25.
 //
 
 import UIKit
-import SnapKit
 
-final class TabBarViewController: UITabBarController {
+final class TabBarController: UITabBarController {
     
     private let tabBarHeight: CGFloat = 95
    
-    private let searchVC = UINavigationController(rootViewController: SearchViewController())
+    private let searchVC = UINavigationController(rootViewController: HomeViewController())
     private let wishListVC = UINavigationController(rootViewController: WishListViewController())
     private let myReservationVC = UINavigationController(rootViewController: MyReservationViewController())
     
@@ -42,12 +41,9 @@ final class TabBarViewController: UITabBarController {
     }
     
     private func configureView() {
-        tabBar.tintColor = .black
-        tabBar.backgroundColor = .grey6
-        setViewControllers([searchVC, wishListVC, myReservationVC], animated: false)
+        tabBar.tintColor = .primary
+        tabBar.backgroundColor = .gray6
         
-        let navigationBarAppearance = UINavigationBarAppearance()
-        navigationBarAppearance.shadowColor = .grey4
-        navigationController?.navigationBar.scrollEdgeAppearance = navigationBarAppearance
+        setViewControllers([searchVC, wishListVC, myReservationVC], animated: false)
     }
 }

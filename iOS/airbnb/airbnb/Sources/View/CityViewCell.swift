@@ -1,5 +1,5 @@
 //
-//  SearchTableViewCell.swift
+//  CityViewCell.swift
 //  airbnb
 //
 //  Created by Jihee hwang on 2022/05/30.
@@ -8,9 +8,9 @@
 import UIKit
 import SnapKit
 
-final class SearchTableViewCell: UITableViewCell {
+final class CityViewCell: UITableViewCell {
     
-    static let identifier = "SearchTableViewCell"
+    static let identifier = "CityViewCell"
     
     private let cityImageView = UIImageView()
     
@@ -32,7 +32,7 @@ final class SearchTableViewCell: UITableViewCell {
     private let distanceLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .regular)
-        label.textColor = .grey3
+        label.textColor = .gray3
         return label
     }()
     
@@ -49,7 +49,7 @@ final class SearchTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-        contentView.layer.backgroundColor = selected ? UIColor.grey5.cgColor : UIColor.white.cgColor
+        contentView.layer.backgroundColor = selected ? UIColor.gray5.cgColor : UIColor.white.cgColor
     }
     
     private func layout() {
@@ -74,7 +74,9 @@ final class SearchTableViewCell: UITableViewCell {
     }
 }
 
-extension SearchTableViewCell {
+// MARK: - functions
+
+extension CityViewCell {
     func setData(image: String, city: String, distance: String) {
         cityImageView.image = UIImage(named: "\(image)")
         cityLabel.text = city
