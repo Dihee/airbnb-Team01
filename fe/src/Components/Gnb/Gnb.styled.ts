@@ -19,6 +19,7 @@ export const Menu = styled.ul`
 `;
 
 export const Buttons = styled.ul`
+  position: relative;
   margin-right: 80px;
   background-color: #fff;
   width: 76px;

@@ -4,12 +4,17 @@ import logo from "Asset/logo.svg";
 import { Buttons, Container, Logo, Menu, Menus } from "Components/Gnb/Gnb.styled";
 import { Img } from "Components/Common/styled";
 import { NavLink } from "react-router-dom";
+import { useState } from "react";
+import Login from "Components/Login/Login";
 
 interface GnBType {
   contents?: any;
 }
 
 export default function Gnb({ contents }: GnBType) {
+  const [loginState, setLoginState] = useState(false);
+  const toggleLoginButton = () => setLoginState(!loginState);
+
   return (
     <Container flex={true} justify="space-between">
       <Logo>
@@ -28,7 +33,8 @@ export default function Gnb({ contents }: GnBType) {
       )}
       <Buttons flex={true} justify="center" align="center">
         <Img src={drawerMenu} width="18px" height="18px" alt="메뉴" />
-        <Img src={userImg} width="32px" height="32px" alt="로그인" />
+        <Img src={userImg} width="32px" height="32px" alt="로그인" onClick={toggleLoginButton} />
+        {loginState && <Login setLoginState={setLoginState} />}
       </Buttons>
     </Container>
   );
